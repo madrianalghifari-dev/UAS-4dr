@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { CustomerClient } from "./customer-client";
 import { Metadata } from "next";
-
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Pelanggan - Laundry Management",
 };

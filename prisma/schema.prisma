@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,7 +12,7 @@ model User {
   nama      String
   email     String   @unique
   password  String
-  role      String   @default("staff") // 'admin', 'staff'
+  role      String   @default("staff")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   orders    Order[]
@@ -35,7 +32,7 @@ model Customer {
 model Service {
   id            String   @id @default(uuid())
   nama_layanan  String
-  satuan        String   @default("kg") // 'kg', 'item'
+  satuan        String   @default("kg")
   harga         Float
   estimasi_hari Int      @default(2)
   is_active     Boolean  @default(true)
@@ -52,17 +49,15 @@ model Order {
   berat_kg                 Float?
   jumlah_item              Int?
   total_harga              Float
-  status                   String    @default("diterima") // 'diterima','proses_cuci','proses_setrika','siap_diambil','selesai','dibatalkan'
+  status                   String    @default("diterima")
   tanggal_masuk            DateTime  @default(now())
   tanggal_estimasi_selesai DateTime
   tanggal_selesai_aktual   DateTime?
   catatan                  String?
   created_by               String?
-
-  customer Customer @relation(fields: [customer_id], references: [id])
-  service  Service  @relation(fields: [service_id], references: [id])
-  user     User?    @relation(fields: [created_by], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+  user                     User?     @relation(fields: [created_by], references: [id])
+  service                  Service   @relation(fields: [service_id], references: [id])
+  customer                 Customer  @relation(fields: [customer_id], references: [id])
 }
