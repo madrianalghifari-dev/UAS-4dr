@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  nama      String
+  email     String   @unique
+  password  String
+  role      String   @default("staff") // 'admin', 'staff'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  nama      String
+  no_hp     String   @unique
+  alamat    String?
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Service {
+  id            String   @id @default(uuid())
+  nama_layanan  String
+  satuan        String   @default("kg") // 'kg', 'item'
+  harga         Float
+  estimasi_hari Int      @default(2)
+  is_active     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  orders        Order[]
+}
+
+model Order {
+  id                       String    @id @default(uuid())
+  kode_invoice             String    @unique
+  customer_id              String
+  service_id               String
+  berat_kg                 Float?
+  jumlah_item              Int?
+  total_harga              Float
+  status                   String    @default("diterima") // 'diterima','proses_cuci','proses_setrika','siap_diambil','selesai','dibatalkan'
+  tanggal_masuk            DateTime  @default(now())
+  tanggal_estimasi_selesai DateTime
+  tanggal_selesai_aktual   DateTime?
+  catatan                  String?
+  created_by               String?
+
+  customer Customer @relation(fields: [customer_id], references: [id])
+  service  Service  @relation(fields: [service_id], references: [id])
+  user     User?    @relation(fields: [created_by], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
